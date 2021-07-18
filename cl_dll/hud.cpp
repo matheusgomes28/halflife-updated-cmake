@@ -603,7 +603,7 @@ float HUD_GetFOV()
 		*( float * )&buf[ i ] = g_lastFOV;
 		i += sizeof( float );
 
-		Demo_WriteBuffer( TYPE_ZOOM, i, buf );
+		Demo_WriteBuffer( static_cast<int>(DEMO_MSG::ZOOM), i, buf );
 	}
 
 	if ( gEngfuncs.pDemoAPI->IsPlayingback() )

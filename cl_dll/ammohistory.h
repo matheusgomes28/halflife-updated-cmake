@@ -96,18 +96,18 @@ extern WeaponsResource gWR;
 
 
 #define MAX_HISTORY 12
-enum {
-	HISTSLOT_EMPTY,
-	HISTSLOT_AMMO,
-	HISTSLOT_WEAP,
-	HISTSLOT_ITEM,
+enum class HISTORY {
+	EMPTY,
+	AMMO,
+	WEAP,
+	ITEM,
 };
 
 class HistoryResource
 {
 private:
 	struct HIST_ITEM {
-		int type;
+		HISTORY type;
 		float DisplayTime;  // the time at which this item should be removed from the history
 		int iCount;
 		int iId;
@@ -130,8 +130,8 @@ public:
 	int iHistoryGap;
 	int iCurrentHistorySlot;
 
-	void AddToHistory( int iType, int iId, int iCount = 0 );
-	void AddToHistory( int iType, const char *szName, int iCount = 0 );
+	void AddToHistory( HISTORY iType, int iId, int iCount = 0 );
+	void AddToHistory( HISTORY iType, const char *szName, int iCount = 0 );
 
 	void CheckClearHistory();
 	int DrawAmmoHistory( float flTime );

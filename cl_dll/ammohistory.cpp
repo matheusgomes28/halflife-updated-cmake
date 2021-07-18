@@ -43,9 +43,9 @@ struct ITEM_INFO
 	wrect_t rect;
 };
 
-void HistoryResource :: AddToHistory( int iType, int iId, int iCount )
+void HistoryResource :: AddToHistory( HISTORY iType, int iId, int iCount )
 {
-	if ( iType == HISTSLOT_AMMO && !iCount )
+	if ( (iType == HISTORY::AMMO) && !iCount )
 		return;  // no amount, so don't add
 
 	if ( (((AMMO_PICKUP_GAP * iCurrentHistorySlot) + AMMO_PICKUP_PICK_HEIGHT) > AMMO_PICKUP_HEIGHT_MAX) || (iCurrentHistorySlot >= MAX_HISTORY) )
@@ -63,9 +63,9 @@ void HistoryResource :: AddToHistory( int iType, int iId, int iCount )
 	freeslot->DisplayTime = gHUD.m_flTime + HISTORY_DRAW_TIME;
 }
 
-void HistoryResource :: AddToHistory( int iType, const char *szName, int iCount )
+void HistoryResource :: AddToHistory( HISTORY iType, const char *szName, int iCount )
 {
-	if ( iType != HISTSLOT_ITEM )
+	if ( iType != HISTORY::ITEM )
 		return;
 
 	if ( (((AMMO_PICKUP_GAP * iCurrentHistorySlot) + AMMO_PICKUP_PICK_HEIGHT) > AMMO_PICKUP_HEIGHT_MAX) || (iCurrentHistorySlot >= MAX_HISTORY) )
@@ -95,7 +95,8 @@ void HistoryResource :: CheckClearHistory()
 {
 	for ( int i = 0; i < MAX_HISTORY; i++ )
 	{
-		if ( rgAmmoHistory[i].type )
+		// TODO : Could swap this to an std::any()
+		if ( rgAmmoHistory[i].type != HISTORY::EMPTY)
 			return;
 	}
 
@@ -109,7 +110,7 @@ int HistoryResource :: DrawAmmoHistory( float flTime )
 {
 	for ( int i = 0; i < MAX_HISTORY; i++ )
 	{
-		if ( rgAmmoHistory[i].type )
+		if ( rgAmmoHistory[i].type != HISTORY::EMPTY )
 		{
 			rgAmmoHistory[i].DisplayTime = V_min( rgAmmoHistory[i].DisplayTime, gHUD.m_flTime + HISTORY_DRAW_TIME );
 
@@ -118,7 +119,7 @@ int HistoryResource :: DrawAmmoHistory( float flTime )
 				memset( &rgAmmoHistory[i], 0, sizeof(HIST_ITEM) );
 				CheckClearHistory();
 			}
-			else if ( rgAmmoHistory[i].type == HISTSLOT_AMMO )
+			else if ( rgAmmoHistory[i].type == HISTORY::AMMO )
 			{
 				wrect_t rcPic;
 				HSPRITE *spr = gWR.GetAmmoPicFromWeapon( rgAmmoHistory[i].iId, rcPic );
@@ -140,7 +141,7 @@ int HistoryResource :: DrawAmmoHistory( float flTime )
 				// Draw the number
 				gHUD.DrawHudNumberString( xpos - 10, ypos, xpos - 100, rgAmmoHistory[i].iCount, r, g, b );
 			}
-			else if ( rgAmmoHistory[i].type == HISTSLOT_WEAP )
+			else if ( rgAmmoHistory[i].type ==  HISTORY::WEAP)
 			{
 				WEAPON *weap = gWR.GetWeapon( rgAmmoHistory[i].iId );
 
@@ -161,7 +162,7 @@ int HistoryResource :: DrawAmmoHistory( float flTime )
 				SPR_Set( weap->hInactive, r, g, b );
 				SPR_DrawAdditive( 0, xpos, ypos, &weap->rcInactive );
 			}
-			else if ( rgAmmoHistory[i].type == HISTSLOT_ITEM )
+			else if ( rgAmmoHistory[i].type == HISTORY::ITEM )
 			{
 				int r, g, b;
 
