@@ -502,7 +502,7 @@ int CHudAmmo::MsgFunc_AmmoPickup( const char *pszName, int iSize, void *pbuf )
 	int iCount = READ_BYTE();
 
 	// Add ammo to the history
-	gHR.AddToHistory( HISTSLOT_AMMO, iIndex, abs(iCount) );
+	gHR.AddToHistory( HISTORY::AMMO, iIndex, abs(iCount) );
 
 	return 1;
 }
@@ -513,7 +513,7 @@ int CHudAmmo::MsgFunc_WeapPickup( const char *pszName, int iSize, void *pbuf )
 	int iIndex = READ_BYTE();
 
 	// Add the weapon to the history
-	gHR.AddToHistory( HISTSLOT_WEAP, iIndex );
+	gHR.AddToHistory( HISTORY::WEAP, iIndex );
 
 	return 1;
 }
@@ -524,7 +524,7 @@ int CHudAmmo::MsgFunc_ItemPickup( const char *pszName, int iSize, void *pbuf )
 	const char *szName = READ_STRING();
 
 	// Add the weapon to the history
-	gHR.AddToHistory( HISTSLOT_ITEM, szName );
+	gHR.AddToHistory( HISTORY::ITEM, szName );
 
 	return 1;
 }
