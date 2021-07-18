@@ -19,6 +19,8 @@
 #include <memory.h>
 #include "Exports.h"
 
+#include <map>
+
 int g_demosniper = 0;
 int g_demosniperdamage = 0;
 float g_demosniperorg[3];
@@ -47,6 +49,11 @@ void Demo_WriteBuffer( int type, int size, unsigned char *buffer )
 	gEngfuncs.pDemoAPI->WriteBuffer( size + sizeof( int ), buf );
 }
 
+bool Is_Valid_Demo_Msg(int value)
+{
+	return (value == static_cast<int>(DEMO_MSG::SNIPERDOT)) && (value == static_cast<int>(DEMO_MSG::ZOOM));
+}
+
 /*
 =====================
 Demo_ReadBuffer
@@ -58,14 +65,20 @@ void DLLEXPORT Demo_ReadBuffer( int size, unsigned char *buffer )
 {
 //	RecClReadDemoBuffer(size, buffer);
 
-	int type;
 	int i = 0;
 
-	type = *( int * )buffer;
-	i += sizeof( int );
-	switch ( type )
+	const int type = *( int * )buffer;
+
+	if (!Is_Valid_Demo_Msg(type))
 	{
-	case TYPE_SNIPERDOT:
+		gEngfuncs.Con_DPrintf( "Unknown demo buffer type, skipping.\n" );
+		return;
+	}
+
+	i += sizeof( int );
+	switch ( static_cast<DEMO_MSG>(type) )
+	{
+	case DEMO_MSG::SNIPERDOT:
 		g_demosniper = *(int * )&buffer[ i ];
 		i += sizeof( int );
 		
@@ -88,12 +101,11 @@ void DLLEXPORT Demo_ReadBuffer( int size, unsigned char *buffer )
 			i += sizeof( float );
 		}
 		break;
-	case TYPE_ZOOM:
+	case DEMO_MSG::ZOOM:
 		g_demozoom = *(float * )&buffer[ i ];
 		i += sizeof( float );
 		break;
 	default:
-		gEngfuncs.Con_DPrintf( "Unknown demo buffer type, skipping.\n" );
 		break;
 	}
 }

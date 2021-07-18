@@ -9,11 +9,10 @@
 #define DEMOH
 #pragma once
 
-// Types of demo messages we can write/parse
-enum
+enum class DEMO_MSG
 {
-	TYPE_SNIPERDOT = 0,
-	TYPE_ZOOM
+	SNIPERDOT = 0,
+	ZOOM
 };
 
 void Demo_WriteBuffer( int type, int size, unsigned char *buffer );
